@@ -2,9 +2,27 @@ import { getAllJobs, getJobById } from "../services/jobs.service.js";
 
 export const getJobs = async (req, res) => {
   try {
+    
+    const page = Number(req.query.page) || 1;
+    const limit = Number(req.query.limit) || 10;
+
     const jobs = await getAllJobs();
-    res.json(jobs);
+
+    
+    const start = (page - 1) * limit;
+    const end = start + limit;
+
+    
+    const jobsPage = jobs.slice(start, end);
+
+    
+    res.json({
+      jobs: jobsPage,
+      page,
+      totalPages: Math.ceil(jobs.length / limit),
+    });
   } catch (error) {
+    console.error(error);
     res.status(500).json({ error: "Erro ao buscar vagas" });
   }
 };
@@ -27,21 +45,33 @@ export const getJob = async (req, res) => {
 
 export const filterJobsByCategory = async (req, res) => {
   try {
-    const { category } = req.query;
+    const { category, page = 1, limit = 10 } = req.query;
 
     if (!category) {
       return res.status(400).json({ error: "Parâmetro 'category' é obrigatório" });
     }
 
-    const jobs = await getAllJobs();
+    const allJobs = await getAllJobs();
 
-    const filteredJobs = jobs.filter(
+    const filteredJobs = allJobs.filter(
       job => String(job.category).toLowerCase() === String(category).toLowerCase()
     );
 
-    res.json(filteredJobs);
+    const pageNum = Number(page);
+    const limitNum = Number(limit);
+
+    const start = (pageNum - 1) * limitNum;
+    const end = start + limitNum;
+
+    const paginatedJobs = filteredJobs.slice(start, end);
+
+    res.json({
+      jobs: paginatedJobs,
+      page: pageNum,
+      totalPages: Math.ceil(filteredJobs.length / limitNum),
+    });
   } catch (error) {
-    console.error(error.message);
+    console.error(error);
     res.status(500).json({ error: "Erro ao filtrar vagas por categoria" });
   }
 };

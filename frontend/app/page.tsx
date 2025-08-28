@@ -8,8 +8,8 @@ export default function Home() {
         <h2 className="text-xl font-semibold">Sua nova oportunidade está aqui!</h2>
         
         <div className="items-center flex space-x-4">
-          <a href="/jobs" className="text-white font-semibold bg-cyan-600 rounded-3xl p-3">Ver vagas disponíveis</a>
-          <a href="/favorites" className="text-white font-semibold bg-amber-600 rounded-3xl p-3">Favoritos</a>
+          <a href="/jobs" className="text-white font-semibold bg-cyan-600 rounded-3xl px-3 py-2">Ver vagas disponíveis</a>
+          <a href="/favorites" className="text-white font-semibold bg-amber-600 rounded-3xl px-3 py-2">Favoritos</a>
         </div>
       </main>
       <footer className="row-start-3 flex gap-[24px] flex-wrap items-center justify-center">
