@@ -1,14 +1,16 @@
 import Link from "next/link";
+import FavoriteButton from "./FavoriteButton";
 
-export default function JobCard({ job }) {
+export default function JobCard({ job, favoritesMap }) {
   return (
-    <div className="relative bg-neutral-300 rounded-3xl flex flex-row p-3 w-3xl">
-      <button className="absolute top-3 right-3 bg-white font-semibold px-3 py-2 rounded-3xl">
-        ★ Favoritar
-      </button>
+    <div className="relative bg-neutral-300 rounded-3xl flex flex-row p-3 w-sm md:w-3xl">
+      <FavoriteButton
+        jobId={job.id}
+        initialIsFavorite={favoritesMap[job.id] || false}
+      />
 
       <img
-        className="rounded-3xl bg-white mr-6 w-28 h-28"
+        className="rounded-3xl bg-white mr-2 md:mr-6 w-12 h-12 md:w-28 md:h-28"
         src={job.company_logo}
       />
 

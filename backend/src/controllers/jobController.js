@@ -27,6 +27,38 @@ export const getJobs = async (req, res) => {
   }
 };
 
+export const searchJobs = async (req, res) => {
+  try {
+    const { query, page = 1, limit = 10 } = req.query;
+
+    if (!query) {
+      return res.status(400).json({ error: "Parâmetro 'query' é obrigatório" });
+    }
+
+    const allJobs = await getAllJobs();
+
+    const filteredJobs = allJobs.filter(job =>
+      job.title.toLowerCase().includes(query.toLowerCase()) ||
+      (job.company_name && job.company_name.toLowerCase().includes(query.toLowerCase()))
+    );
+
+    const pageNum = Number(page);
+    const limitNum = Number(limit);
+    const start = (pageNum - 1) * limitNum;
+    const end = start + limitNum;
+    const paginatedJobs = filteredJobs.slice(start, end);
+
+    res.json({
+      jobs: paginatedJobs,
+      page: pageNum,
+      totalPages: Math.ceil(filteredJobs.length / limitNum),
+    });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: "Erro ao buscar vagas" });
+  }
+};
+
 export const getJob = async (req, res) => {
   try {
     const { id } = req.params;

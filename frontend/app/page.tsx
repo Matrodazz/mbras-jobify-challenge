@@ -9,12 +9,8 @@ export default function Home() {
         
         <div className="items-center flex space-x-4">
           <a href="/jobs" className="text-white font-semibold bg-cyan-600 rounded-3xl px-3 py-2">Ver vagas disponíveis</a>
-          <a href="/favorites" className="text-white font-semibold bg-amber-600 rounded-3xl px-3 py-2">Favoritos</a>
         </div>
       </main>
-      <footer className="row-start-3 flex gap-[24px] flex-wrap items-center justify-center">
-        <p className="">Jobify - 2025</p>
-      </footer>
     </div>
   );
 }

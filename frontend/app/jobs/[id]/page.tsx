@@ -2,6 +2,8 @@
 
 import { useParams } from "next/navigation";
 import { useEffect, useState } from "react";
+import DOMPurify from "dompurify";
+import FavoriteButton from "@/app/components/FavoriteButton"; 
 
 interface Job {
   id: number;
@@ -16,25 +18,35 @@ interface Job {
   tags?: string[];
 }
 
+const USER_ID = "6c366c78-badf-4c60-828a-db58f2467797";
+
 export default function JobDetailPage() {
   const { id } = useParams();
   const [job, setJob] = useState<Job | null>(null);
+  const [isFavorite, setIsFavorite] = useState(false);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     async function fetchJob() {
       try {
-        const res = await fetch(`http://localhost:4000/api/jobs/${id}`);
-        if (!res.ok) {
-          console.warn("Vaga não encontrada ou erro");
+        const [jobRes, favRes] = await Promise.all([
+          fetch(`http://localhost:4000/api/jobs/${id}`),
+          fetch(`http://localhost:4000/api/favorites/user/${USER_ID}`)
+        ]);
+
+        if (!jobRes.ok) {
           setJob(null);
           return;
         }
 
-        const data: Job = await res.json();
-        setJob(data);
+        const jobData: Job = await jobRes.json();
+        setJob(jobData);
+
+        const favData = await favRes.json();
+        const favoriteIds = Array.isArray(favData) ? favData.map(f => f.job_id) : [];
+        setIsFavorite(favoriteIds.includes(jobData.id));
       } catch (error) {
-        console.error("Erro ao buscar vaga:", error);
+        console.error("Erro ao buscar vaga ou favoritos:", error);
         setJob(null);
       } finally {
         setLoading(false);
@@ -44,13 +56,21 @@ export default function JobDetailPage() {
     fetchJob();
   }, [id]);
 
-  if (loading) return <p>Carregando...</p>;
-  if (!job) return <p>Vaga não encontrada</p>;
+  if (loading) {
+    return (
+      <div className="flex justify-center items-center min-h-[50vh] mb-100">
+        <div className="w-12 h-12 border-4 border-cyan-600 border-t-transparent rounded-full animate-spin"></div>
+      </div>
+    );
+  }
+
+  if (!job) return <p className="text-center mt-8">Vaga não encontrada</p>;
 
   return (
-    <main className="p-8 max-w-3xl mx-auto">
-      
-      <h1 className="text-4xl text-cyan-600 font-bold mb-4">{job.title}</h1>
+    <main className="p-8 max-w-3xl mx-auto relative">
+
+      <h1 className="text-4xl text-cyan-600 font-bold mb-8 md:mb-4">{job.title}</h1>
+      <FavoriteButton  jobId={job.id} initialIsFavorite={isFavorite} className="relative"/>
 
       <section className="mt-6">
         <div className="flex items-center gap-4">
@@ -65,11 +85,9 @@ export default function JobDetailPage() {
         </div>
       </section>
 
-     
       <section className="mt-6">
         <p>
-          Local:{" "}
-          <strong>{job.candidate_required_location || "Não informado"}</strong>
+          Local: <strong>{job.candidate_required_location || "Não informado"}</strong>
         </p>
         <p>
           Tipo: <strong>{job.job_type || "Não informado"}</strong>
@@ -95,11 +113,9 @@ export default function JobDetailPage() {
         <h2 className="text-xl font-semibold">Descrição da vaga</h2>
         <div
           className="prose p-4"
-          dangerouslySetInnerHTML={{ __html: job.description }}
+          dangerouslySetInnerHTML={{ __html: DOMPurify.sanitize(job.description) }}
         />
       </section>
-
-      
     </main>
   );
 }
