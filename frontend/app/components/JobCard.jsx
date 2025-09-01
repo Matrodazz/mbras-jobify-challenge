@@ -1,6 +1,11 @@
 import Link from "next/link";
 import FavoriteButton from "./FavoriteButton";
 
+// Componente que exibe uma vaga individual
+// Props:
+// - job: objeto contendo as informações da vaga
+// - favoritesMap: objeto com o status de favoritos { [jobId]: true/false }
+
 export default function JobCard({ job, favoritesMap }) {
   return (
     <div className="relative bg-neutral-300 rounded-3xl flex flex-row p-3 w-sm md:w-3xl">

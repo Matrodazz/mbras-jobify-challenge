@@ -4,13 +4,14 @@ import axios from "axios";
 import JobCard from "./JobCard";
 import FilterButton from "./FilterButton";
 
-const USER_ID = "6c366c78-badf-4c60-828a-db58f2467797";
+const USER_ID = "6c366c78-badf-4c60-828a-db58f2467797"; //Usuário guest padrão para MVP da ferramenta
 
 export default function JobsList() {
-  const [jobs, setJobs] = useState([]);
-  const [favoritesMap, setFavoritesMap] = useState({});
-  const [loading, setLoading] = useState(true);
+  const [jobs, setJobs] = useState([]); // lista de vagas
+  const [favoritesMap, setFavoritesMap] = useState({}); // status de favoritos
+  const [loading, setLoading] = useState(true); // controle de loading
 
+  // Estados para filtros e limite para paginação
   const [page, setPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
   const [category, setCategory] = useState("Todos");
@@ -18,6 +19,7 @@ export default function JobsList() {
   const [debouncedQuery, setDebouncedQuery] = useState(searchQuery);
   const limit = 25;
 
+  // Categorias do filtro
   const categories = [
     "Favoritos",
     "Todos",
@@ -47,19 +49,19 @@ export default function JobsList() {
     return () => clearTimeout(handler);
   }, [searchQuery]);
 
- 
+ // Busca as vagas e favoritos do usuário
   useEffect(() => {
     const fetchJobsAndFavorites = async () => {
       setLoading(true);
       try {
-        let jobsUrl = `http://localhost:4000/api/jobs?page=${page}&limit=${limit}`;
+        let jobsUrl = `${process.env.NEXT_PUBLIC_API_URL}/api/jobs?page=${page}&limit=${limit}`;
 
         if (debouncedQuery) {
-          jobsUrl = `http://localhost:4000/api/jobs/search?query=${encodeURIComponent(
+          jobsUrl = `${process.env.NEXT_PUBLIC_API_URL}/api/jobs/search?query=${encodeURIComponent(
             debouncedQuery
           )}&page=${page}&limit=${limit}`;
         } else if (category && category !== "Favoritos" && category !== "Todos") {
-          jobsUrl = `http://localhost:4000/api/jobs/filter?category=${encodeURIComponent(
+          jobsUrl = `${process.env.NEXT_PUBLIC_API_URL}/api/jobs/filter?category=${encodeURIComponent(
             category.trim()
           )}&page=${page}&limit=${limit}`;
         }
@@ -70,7 +72,7 @@ export default function JobsList() {
         setTotalPages(jobsRes.data.totalPages || 1);
 
         const favRes = await axios.get(
-          `http://localhost:4000/api/favorites/user/${USER_ID}`
+          `${process.env.NEXT_PUBLIC_API_URL}/api/favorites/user/${USER_ID}`
         );
         const map = {};
         if (Array.isArray(favRes.data)) {

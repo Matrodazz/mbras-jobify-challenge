@@ -1,3 +1,8 @@
+// Componente de botão para filtrar categorias de vagas
+// Props:
+// - label: texto que será exibido no botão
+// - isActive: boolean que indica se o botão está selecionado
+
 const FilterButton = ({ label, isActive, onClick }) => {
   return (
     <button

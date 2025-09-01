@@ -1,5 +1,6 @@
 import supabase from "../supabaseClient.js";
 
+// Verifica se um job específico está favoritado por um usuário.
 export const getFavoriteStatus = async (userId, jobId) => {
   const { data, error } = await supabase
     .from("favorites")
@@ -12,6 +13,7 @@ export const getFavoriteStatus = async (userId, jobId) => {
   return !!data;
 };
 
+// Alterna o status de favorito de um job para um usuário.
 export const toggleFavorite = async (userId, jobId) => {
   const isFavorited = await getFavoriteStatus(userId, jobId);
 

@@ -1,5 +1,9 @@
 import { getAllJobs, getJobById } from "../services/jobs.service.js";
 
+/**
+ * Retorna todas as vagas com paginação.
+ * GET /api/jobs?page=1&limit=10
+ */
 export const getJobs = async (req, res) => {
   try {
     
@@ -27,6 +31,10 @@ export const getJobs = async (req, res) => {
   }
 };
 
+/**
+ * Busca vagas pelo título ou nome da empresa.
+ * GET /api/jobs/search?query=designer&page=1&limit=10
+ */
 export const searchJobs = async (req, res) => {
   try {
     const { query, page = 1, limit = 10 } = req.query;
@@ -59,6 +67,10 @@ export const searchJobs = async (req, res) => {
   }
 };
 
+/**
+ * Retorna uma vaga específica pelo ID.
+ * GET /api/jobs/:id
+ */
 export const getJob = async (req, res) => {
   try {
     const { id } = req.params;
@@ -75,6 +87,10 @@ export const getJob = async (req, res) => {
   }
 };
 
+/**
+ * Filtra vagas por categoria com paginação.
+ * GET /api/jobs/filter?category=design&page=1&limit=10
+ */
 export const filterJobsByCategory = async (req, res) => {
   try {
     const { category, page = 1, limit = 10 } = req.query;

@@ -1,7 +1,12 @@
 import { useState } from "react";
 import axios from "axios";
 
-const USER_ID = "6c366c78-badf-4c60-828a-db58f2467797";
+// Componente de botão para filtro de categorias na lista de vagas
+// Props:
+// - label: texto exibido no botão
+// - isActive: boolean que indica se o botão está ativo
+
+const USER_ID = "6c366c78-badf-4c60-828a-db58f2467797"; //Usuário guest padrão para MVP da ferramenta
 
 export default function FavoriteButton({ jobId, initialIsFavorite = false, className = ""  }) {
   const [isFavorite, setIsFavorite] = useState(initialIsFavorite);
@@ -10,7 +15,7 @@ export default function FavoriteButton({ jobId, initialIsFavorite = false, class
   const toggleFavorite = async () => {
     setLoading(true);
     try {
-      await axios.post("http://localhost:4000/api/favorites/toggle", {
+      await axios.post(`${process.env.NEXT_PUBLIC_API_URL}/api/favorites/toggle`, {
         userId: USER_ID,
         jobId,
       });

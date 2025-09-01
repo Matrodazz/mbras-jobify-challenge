@@ -18,20 +18,21 @@ interface Job {
   tags?: string[];
 }
 
-const USER_ID = "6c366c78-badf-4c60-828a-db58f2467797";
+const USER_ID = "6c366c78-badf-4c60-828a-db58f2467797"; //Usuário guest padrão para MVP da ferramenta
 
 export default function JobDetailPage() {
-  const { id } = useParams();
-  const [job, setJob] = useState<Job | null>(null);
-  const [isFavorite, setIsFavorite] = useState(false);
-  const [loading, setLoading] = useState(true);
+  const { id } = useParams(); // pega o id da vaga da URL
+  const [job, setJob] = useState<Job | null>(null); // estado da vaga
+  const [isFavorite, setIsFavorite] = useState(false); // busca se está favoritada
+  const [loading, setLoading] = useState(true); // controle de loading
 
+  // Busca os detalhes da vaga quando a página é carregada
   useEffect(() => {
     async function fetchJob() {
       try {
         const [jobRes, favRes] = await Promise.all([
-          fetch(`http://localhost:4000/api/jobs/${id}`),
-          fetch(`http://localhost:4000/api/favorites/user/${USER_ID}`)
+          fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/jobs/${id}`),
+          fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/favorites/user/${USER_ID}`)
         ]);
 
         if (!jobRes.ok) {

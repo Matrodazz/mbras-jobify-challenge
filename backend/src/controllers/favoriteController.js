@@ -1,5 +1,9 @@
 import supabase from "../supabaseClient.js";
 
+/**
+ * Retorna todos os favoritos de um usuário.
+ * GET /api/favorites/user/:userId
+ */
 export async function handleGetAllFavorites(req, res) {
   const { userId } = req.params;
 
@@ -18,6 +22,10 @@ export async function handleGetAllFavorites(req, res) {
   }
 }
 
+/**
+ * Retorna se uma vaga específica está favoritada por um usuário.
+ * GET /api/favorites/status/:userId/:jobId
+ */
 export const handleGetFavoriteStatus = async (req, res) => {
   const { userId, jobId } = req.params;
 
@@ -40,6 +48,11 @@ export const handleGetFavoriteStatus = async (req, res) => {
   }
 };
 
+/**
+ * Alterna o status de favorito de uma vaga para um usuário.
+ * POST /api/favorites/toggle
+ * { userId, jobId }
+ */
 export const handleToggleFavorite = async (req, res) => {
   const { userId, jobId } = req.body;
 
